@@ -44,8 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\rhoconnectController.cs" />
+    <Compile Include="Controllers\rhoconnectController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\RhoconnectCRUD.cs" />
+    <Compile Include="Lib\Client.cs" />
+    <Compile Include="Lib\Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

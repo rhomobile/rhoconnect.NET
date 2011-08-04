@@ -13,11 +13,12 @@ namespace RhoconnectNET.Controllers
     public interface RhoconnectCRUD
     {
         JsonResult rhoconnect_query_objects();
-        String rhoconnect_partition();
-        String rhoconnect_id_field();
         ActionResult rhoconnect_create(String objJson);
         ActionResult rhoconnect_update(Dictionary<string, object> changes);
         ActionResult rhoconnect_delete(Object objId);
+
+        String rhoconnect_partition();
+        String rhoconnect_id_field();
         IModelBinder rhoconnect_model_binder(Type parameterType);
     }
 }
