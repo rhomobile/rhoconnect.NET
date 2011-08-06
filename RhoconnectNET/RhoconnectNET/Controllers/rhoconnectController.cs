@@ -61,7 +61,7 @@ namespace RhoconnectNET.Controllers
             }
             catch (SystemException exc)
             {
-                // set the response code to 500
+                // set the response code to 401 and return error message
                 returnValue = exc.Message;
                 Response.StatusCode = 401;
             }
