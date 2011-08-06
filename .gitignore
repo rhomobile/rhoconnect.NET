@@ -1,6 +1,7 @@
 RhoconnectNET/RhoconnectNET.suo
 RhoconnectNET/RhoconnectNET/obj/*
-RhoconnectNET/RhoconnectNET/bin/*
+RhoconnectNET/RhoconnectNET/bin/Debug/*
+RhoconnectNET/RhoconnectNET/bin/Release/RhoconnectNET.pdb
 MyApp/*
 RhoconnectNET/RhoconnectNET/Lib/*.bak
 RhoconnectNET/RhoconnectNET/Controllers/*.bak

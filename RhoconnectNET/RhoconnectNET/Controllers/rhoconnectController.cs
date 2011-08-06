@@ -89,6 +89,7 @@ namespace RhoconnectNET.Controllers
             return Json("");
         }
 
+        // POST /rhoconnect/create
         public ActionResult create()
         {
             try {
@@ -106,6 +107,7 @@ namespace RhoconnectNET.Controllers
             return Json("");
         }
 
+        // POST /rhoconnect/update
         public ActionResult update()
         {
             try {
@@ -123,6 +125,7 @@ namespace RhoconnectNET.Controllers
             return Json("");
         }
 
+        // POST /rhoconnect/delete
         public ActionResult delete()
         {
             try {
