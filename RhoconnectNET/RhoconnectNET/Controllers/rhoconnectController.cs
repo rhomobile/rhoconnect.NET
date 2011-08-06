@@ -31,7 +31,7 @@ namespace RhoconnectNET.Controllers
             return new JavaScriptSerializer().Deserialize<Hashtable>(json);
         }
 
-        private RhoconnectCRUD instantiate_controller(String controllerName)
+        private IRhoconnectCRUD instantiate_controller(String controllerName)
         {
             // Instantiate the controller and call Execute 
             IControllerFactory factory = ControllerBuilder.Current.GetControllerFactory();
@@ -42,27 +42,33 @@ namespace RhoconnectNET.Controllers
                 throw new SystemException("Cannot instantiate controller: " + controllerName);
             }
             // now we have a controller
-            return (RhoconnectCRUD)controller;
+            return (IRhoconnectCRUD)controller;
         }
 
         // POST /rhoconnect/authenticate
         public ActionResult authenticate()
         {
             // authenticate here
+            String returnValue;
             try
             {
                 Hashtable reqHash = deserialize_request();
+                returnValue = (String)reqHash["login"];
                 Response.StatusCode = 200;
+                bool authOK = RhoconnectNET.Helpers.rhoconnect_authenticate((String)reqHash["login"], (String)reqHash["password"], reqHash);
+                if (!authOK)
+                    throw new SystemException("Authentication has failed");
             }
-            catch
+            catch (SystemException exc)
             {
                 // set the response code to 500
-                Response.StatusCode = 500;
+                returnValue = exc.Message;
+                Response.StatusCode = 401;
             }
 
             return new ContentResult
             {
-                Content = "",
+                Content = returnValue,
                 ContentType = "text/plain"
             };
         }
@@ -72,8 +78,8 @@ namespace RhoconnectNET.Controllers
         {
             try {
                 Hashtable reqHash = deserialize_request();
-                RhoconnectCRUD controller = instantiate_controller((String)reqHash["resource"]); 
-                return controller.rhoconnect_query_objects();
+                IRhoconnectCRUD controller = instantiate_controller((String)reqHash["resource"]);
+                return controller.rhoconnect_query_objects((String)reqHash["user_id"]);
             }
             catch
             {
@@ -89,8 +95,8 @@ namespace RhoconnectNET.Controllers
                 Hashtable reqHash = deserialize_request();
                 string objectString = new JavaScriptSerializer().Serialize(reqHash["attributes"]);
 
-                RhoconnectCRUD controller = instantiate_controller((String)reqHash["resource"]); 
-                return controller.rhoconnect_create(objectString);
+                IRhoconnectCRUD controller = instantiate_controller((String)reqHash["resource"]); 
+                return controller.rhoconnect_create(objectString, (String)reqHash["user_id"]);
             }
             catch
             {
@@ -106,8 +112,8 @@ namespace RhoconnectNET.Controllers
                 Hashtable reqHash = deserialize_request();
                 Dictionary<string, object> changes = (Dictionary<string, object>)reqHash["attributes"];
 
-                RhoconnectCRUD rh_controller = instantiate_controller((String)reqHash["resource"]); 
-                return rh_controller.rhoconnect_update(changes);
+                IRhoconnectCRUD rh_controller = instantiate_controller((String)reqHash["resource"]);
+                return rh_controller.rhoconnect_update(changes, (String)reqHash["user_id"]);
             }
             catch
             {
@@ -123,8 +129,8 @@ namespace RhoconnectNET.Controllers
                 Hashtable reqHash = deserialize_request();
                 Dictionary<string, object> deletes = (Dictionary<string, object>)reqHash["attributes"];
 
-                RhoconnectCRUD rh_controller = instantiate_controller((String)reqHash["resource"]); 
-                return rh_controller.rhoconnect_delete(deletes["id"]);
+                IRhoconnectCRUD rh_controller = instantiate_controller((String)reqHash["resource"]);
+                return rh_controller.rhoconnect_delete(deletes["id"], (String)reqHash["user_id"]);
             }
             catch
             {

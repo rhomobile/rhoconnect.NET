@@ -10,15 +10,11 @@ using System.Diagnostics;
 
 namespace RhoconnectNET.Controllers
 {
-    public interface RhoconnectCRUD
+    public interface IRhoconnectCRUD
     {
-        JsonResult rhoconnect_query_objects();
-        ActionResult rhoconnect_create(String objJson);
-        ActionResult rhoconnect_update(Dictionary<string, object> changes);
-        ActionResult rhoconnect_delete(Object objId);
-
-        String rhoconnect_partition();
-        String rhoconnect_id_field();
-        IModelBinder rhoconnect_model_binder(Type parameterType);
+        JsonResult rhoconnect_query_objects(String partition);
+        ActionResult rhoconnect_create(String objJson, String partition);
+        ActionResult rhoconnect_update(Dictionary<string, object> changes, String partition);
+        ActionResult rhoconnect_delete(Object objId, String partition);
     }
 }

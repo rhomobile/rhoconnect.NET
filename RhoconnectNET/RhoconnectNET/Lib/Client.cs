@@ -17,21 +17,30 @@ namespace RhoconnectNET
 
         public static bool set_app_endpoint(String endpoint,
                                             String app_endpoint,
-                                            String api_token)
+                                            String api_token,
+                                            Func<String, String, Hashtable, bool> auth_handler)
         {
-            _endpoint_url = endpoint;
-            _api_token = api_token;
+            try
+            {
+                _endpoint_url = endpoint;
+                _api_token = api_token;
+                Helpers._auth_handler = auth_handler;
 
-            Hashtable reqHash = new Hashtable();
-            reqHash.Add("api_token", _api_token);
-            Hashtable attrHash = new Hashtable();
-            attrHash.Add("adapter_url", app_endpoint);
-            reqHash.Add("attributes", attrHash);
+                Hashtable reqHash = new Hashtable();
+                reqHash.Add("api_token", _api_token);
+                Hashtable attrHash = new Hashtable();
+                attrHash.Add("adapter_url", app_endpoint);
+                reqHash.Add("attributes", attrHash);
 
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            string requestBody = js.Serialize(reqHash);
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                string requestBody = js.Serialize(reqHash);
 
-            return process_request("save_adapter", requestBody);
+                return process_request("save_adapter", requestBody);
+            }
+            catch (SystemException)
+            {
+                return false;
+            }
         }
 
         public static bool notify_on_create(String source_name, String partition,

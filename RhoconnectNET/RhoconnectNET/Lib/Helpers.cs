@@ -10,6 +10,18 @@ namespace RhoconnectNET
 {
     public class Helpers
     {
+        public static Func<String, String, Hashtable, bool> _auth_handler;
+
+        public static bool rhoconnect_authenticate(String username, String password, Hashtable attrs)
+        {
+            if (_auth_handler != null)
+            {
+                return _auth_handler.Invoke(username, password, attrs);
+            }
+
+            return true;
+        }
+
         public static ActionResult serialize_result(object id)
         {
             return new ContentResult
