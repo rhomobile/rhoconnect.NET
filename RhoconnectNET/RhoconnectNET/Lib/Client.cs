@@ -48,7 +48,7 @@ namespace RhoconnectNET
         {
             Hashtable reqHash = new Hashtable();
             reqHash.Add("objects", objects); 
-            return send_objects("push_objects", source_name, partition, objects);
+            return send_objects("push_objects", source_name, partition, reqHash);
         }
 
         public static bool notify_on_update(String source_name, String partition, Hashtable objects)
