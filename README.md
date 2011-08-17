@@ -63,10 +63,10 @@ and call them from the `Application_Start` method:
 in establishing the communication link between `Rhoconnect` server and the ASP.NET MVC 3 application
 and it has the following parameters:
 
-- String rhoconnect_url : rhoconnect server's url, for example http://localhost:9292
-- String app_endpoint : your MVC app url, for example http://my_pc_host/MyApp
-- String api_token : rhoconnect server's api_token, for example 'secrettoken'.
-- Func<String, String, Hashtable, bool> Authenticating_Routine : handle to the application's authenticating routine (if null, `true` is returned by default)
+- String *rhoconnect_url* : rhoconnect server's url, for example http://localhost:9292
+- String *app_endpoint* : your MVC app url, for example http://my_pc_host/MyApp
+- String *api_token* : rhoconnect server's api_token, for example 'secrettoken'.
+- Func<String, String, Hashtable, bool> *Authenticating_Routine* : handle to the application's authenticating routine (if null, `true` is returned by default)
 
 
 `Rhoconnect.NET` installs `/rhoconnect/authenticate` route into your application which will receive credentials from the client.  
@@ -82,7 +82,7 @@ method you will map your application specific authentication to the Rhoconnect `
 ## Implementing CRUD functionality
 `Rhoconnect.NET` lib installs `/rhoconnect/<CRUD>` routes in your application which the Rhoconnect instance 
 invokes to perform CRUD operations on the data for the dataset you want to synchronize.
-Each of the routes is mapped to a corresponding `rhoconnect_<operation>` method in the IRhoconnectCRUD interface
+Each of the routes is mapped to a corresponding `rhoconnect_<operation>` method in the *IRhoconnectCRUD* interface
 which must be implemented in the dataset's Controller class.
 
 		public class MyDataController : Controller, IRhoconnectCRUD
@@ -98,7 +98,7 @@ which must be implemented in the dataset's Controller class.
 		} 
 
 ### Querying the datasets
-The route `/rhoconnect/query` is mapped to the `rhoconnect_query_objects` method of the IRhoconnectCRUD
+The route `/rhoconnect/query` is mapped to the `rhoconnect_query_objects` method of the *IRhoconnectCRUD*
 interface and must be implemented in the corresponding dataset's Controller class. It should
 return a collection of objects in the form of JsonResult:
 
@@ -133,7 +133,7 @@ return an updated object's id in case of success:
         {
             String obj_id = changes["id"]);
             Product product_to_update = db.Products.First(p => p.id == obj_id); 
-		    // this method will updated only the modified fields
+		    // this method will update only the modified fields
             RhoconnectNET.Helpers.merge_changes(product_to_update, changes);
             db.ObjectStateManager.ChangeObjectState(product_to_update, EntityState.Modified);
             db.SaveChanges();
