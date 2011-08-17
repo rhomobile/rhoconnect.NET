@@ -82,7 +82,7 @@ method you will map your application specific authentication to the Rhoconnect `
 ## Implementing CRUD functionality
 `Rhoconnect.NET` lib installs `/rhoconnect/<CRUD>` routes in your application which the Rhoconnect instance 
 invokes to perform CRUD operations on the data for the dataset you want to synchronize.
-Each of the routes is mapped to a corresponding `rhoconnect_<operation>` method in the *IRhoconnectCRUD* interface
+Each of the routes is mapped to a corresponding `rhoconnect_<operation>` method in the **IRhoconnectCRUD** interface
 which must be implemented in the dataset's Controller class.
 
 		public class MyDataController : Controller, IRhoconnectCRUD
@@ -98,7 +98,7 @@ which must be implemented in the dataset's Controller class.
 		} 
 
 ### Querying the datasets
-The route `/rhoconnect/query` is mapped to the `rhoconnect_query_objects` method of the *IRhoconnectCRUD*
+The route `/rhoconnect/query` is mapped to the `rhoconnect_query_objects` method of the **IRhoconnectCRUD**
 interface and must be implemented in the corresponding dataset's Controller class. It should
 return a collection of objects in the form of JsonResult:
 
