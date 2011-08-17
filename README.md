@@ -14,7 +14,9 @@ Copy the [`rhoconnect.NET`](https://github.com/rhomobile/rhoconnect.NET) github 
 By default, the `rhoconnect.NET` repository contains the pre-built `RhoconnectNET.dll` library in the `bin/Release` subdirectory.
 However, you can build your own library using the provided solution file and the source code files. 
 
-## Adding Rhoconnect.NET reference to the application
+## Usage
+
+### Adding Rhoconnect.NET reference to the application
 
 In order to use `Rhoconnect.NET` functionality in your `ASP.NET MVC 3` application, first you need to include the `Rhoconnect.NET` library 
 as a dependency to your application. Click `Project => Add Reference` menu item in the Visual Studio and navigate to the `RhoconnectNET.dll` library.
