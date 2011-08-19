@@ -15,11 +15,13 @@ By default, the `rhoconnect.NET` repository contains the pre-built `RhoconnectNE
 However, you can build your own library using the provided solution file and the source code files. 
 
 ## Usage
-
-### Adding Rhoconnect.NET reference to the application
-
 In order to use `Rhoconnect.NET` functionality in your `ASP.NET MVC 3` application, first you need to include the `Rhoconnect.NET` library 
 as a dependency to your application. Click `Project => Add Reference` menu item in the Visual Studio and navigate to the `RhoconnectNET.dll` library.
+After this step is completed, you can add references to the `Rhoconnect.NET` namespace into the application's and Controller's files:
+
+	using RhoconnectNET;
+	using RhoconnectNET.Controllers;
+
 
 ### Registering `Rhoconnect.NET` routes for your application
 
@@ -66,7 +68,7 @@ and it has the following parameters:
 - String *rhoconnect_url* : rhoconnect server's url, for example http://localhost:9292
 - String *app_endpoint* : your MVC app url, for example http://my_pc_host/MyApp
 - String *api_token* : rhoconnect server's api_token, for example 'secrettoken'.
-- Func<String, String, Hashtable, bool> *Authenticating_Routine* : handle to the application's authenticating routine (if null, `true` is returned by default)
+- Func\<String, String, Hashtable, bool\> *Authenticating_Routine* : handle to the application's authenticating routine (if null, `true` is returned by default)
 
 
 `Rhoconnect.NET` installs `/rhoconnect/authenticate` route into your application which will receive credentials from the client.  
@@ -150,7 +152,7 @@ return a deleted object's id in case of success:
             String key = objId.ToString();
 
             Product product_to_delete = db.Products.Single(p => p.id == key);
-            db.Movies.DeleteObject(product_to_delete);
+            db.Products.DeleteObject(product_to_delete);
             db.SaveChanges();
             return RhoconnectNET.Helpers.serialize_result(objId);
         }
@@ -189,11 +191,11 @@ For this reason, `RhoconnectNET` library provides three callback routines for CU
 The above example will look like this after inserting the corresponding callback routine:
 
 		[HttpPost]
-	    public ActionResult Create(Movie movie)
+	    public ActionResult Create(Product product)
 	    {
 		     if (ModelState.IsValid)
 		     {
-                db.Product.AddObject(movie);
+                db.Product.AddObject(product);
                 db.SaveChanges();
 
 				// insert these lines to provide
@@ -230,7 +232,7 @@ In the same fashion , your dataset's Controller need to implement `Edit` and `De
 				// about the update operation
                 Hashtable reqHash = new Hashtable();
                 reqHash.Add(product.id.ToString(), product);
-                RhoconnectNET.Client.notify_on_update("Movie", "partition_string", reqHash);
+                RhoconnectNET.Client.notify_on_update("Product", "partition_string", reqHash);
 
                 return RedirectToAction("Index");
             }
@@ -240,13 +242,13 @@ In the same fashion , your dataset's Controller need to implement `Edit` and `De
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(String id)
         {            
-            Product movie = db.Products.Single(p => p.id == id);
+            Product product = db.Products.Single(p => p.id == id);
             db.Products.DeleteObject(product);
             db.SaveChanges();
 
 			// insert this callback to notify Rhoconnect
 			// about the delete operation
-            RhoconnectNET.Client.notify_on_delete("Movie", rhoconnect_partition(), id);
+            RhoconnectNET.Client.notify_on_delete("Product", rhoconnect_partition(), id);
 
             return RedirectToAction("Index");
         }
