@@ -9,7 +9,7 @@ Using rhoconnect.NET, your [ASP.NET MVC3](http://www.asp.net/mvc/mvc3) applicati
 
 Copy the [`rhoconnect.NET`](https://github.com/rhomobile/rhoconnect.NET) github repository to your PC:
 
-	$% git clone git@github.com:rhomobile/rhoconnect.NET.git
+	$ git clone git@github.com:rhomobile/rhoconnect.NET.git
 
 By default, the `rhoconnect.NET` repository contains the pre-built `RhoconnectNET.dll` library in the `bin/Release` subdirectory.
 However, you can build your own library using the provided solution file and the source code files. 
