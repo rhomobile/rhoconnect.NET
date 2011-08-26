@@ -12,9 +12,8 @@ Copy the [`rhoconnect.NET`](https://github.com/rhomobile/rhoconnect.NET) github 
 	$ git clone git@github.com:rhomobile/rhoconnect.NET.git
 
 By default, the `rhoconnect.NET` repository contains the pre-built `RhoconnectNET.dll` library in the `bin/Release` subdirectory.
-However, you can build your own library using the provided solution file and the source code files. 
+However, you can build your own library using the provided Microsoft Visual Studio .NET solution file and the source code files. 
 
-## Usage
 In order to use `Rhoconnect.NET` functionality in your `ASP.NET MVC 3` application, first you need to include the `Rhoconnect.NET` library 
 as a dependency to your application. Click `Project => Add Reference` menu item in the Visual Studio and navigate to the `RhoconnectNET.dll` library.
 After this step is completed, you can add references to the `Rhoconnect.NET` namespace into the application's and Controller's files:
@@ -23,10 +22,10 @@ After this step is completed, you can add references to the `Rhoconnect.NET` nam
 	using RhoconnectNET.Controllers;
 
 
-### Registering `Rhoconnect.NET` routes for your application
+## Registering `Rhoconnect.NET` routes for your application
 
-In order to establish the communication channel between ASP.NET MVC 3 application and Rhoconnect server, 
-you need to implement the following `init_rhoconnect` and `rhoconnect_authenticate` methods in the `Global.asax` file 
+To establish the communication channel between ASP.NET MVC 3 application and Rhoconnect server, 
+you need to implement the following `init_rhoconnect` and `rhoconnect_authenticate` methods in the `Global.asax.cs` file 
 and call them from the `Application_Start` method:
 
 	protected void Application_Start()
@@ -46,6 +45,7 @@ and call them from the `Application_Start` method:
 	{
 		// this call allows parsing JSON structures into Objects
 		ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
+		
 		// this call establishes communication between Rhoconnect and ASP.NET application
 		// as a last parameter we supply authentication routine that will called 
 		// by rhoconnect server to authenticate users.
@@ -57,7 +57,7 @@ and call them from the `Application_Start` method:
 	
 	const bool rhoconnect_authenticate(String username, String password, Hashtable params)
 	{
-		// perform real authentication here
+		// perform your authentication here
 		return true;
 	}
 	
@@ -65,15 +65,32 @@ and call them from the `Application_Start` method:
 in establishing the communication link between `Rhoconnect` server and the ASP.NET MVC 3 application
 and it has the following parameters:
 
-- String *rhoconnect_url* : rhoconnect server's url, for example http://localhost:9292
-- String *app_endpoint* : your MVC app url, for example http://my_pc_host/MyApp
-- String *api_token* : rhoconnect server's api_token, for example 'secrettoken'.
-- Func\<String, String, Hashtable, bool\> *Authenticating_Routine* : handle to the application's authenticating routine (if null, `true` is returned by default)
+<table border="1">
+	<tr>
+		<td>String</td>
+		<td><code>rhoconnect_url</code></td>
+		<td>rhoconnect server's url, for example <code>http://localhost:9292</code>.</td>
+	</tr>
+	<tr>
+		<td>String</td>
+		<td><code>app_endpoint</code></td>
+		<td>your MVC app url, for example <code>http://my_pc_host/MyApp</code>.</td>
+	</tr>
+	<tr>
+		<td>String</td>
+		<td><code>api_token</code></td>
+		<td>rhoconnect server's api_token, for example <code>secrettoken</code>.</td>
+	</tr>
+	<tr>
+		<td>Func&lt;String, String, Hashtable, bool&gt;</td>
+		<td><code>Authenticating_Routine</code></td>
+		<td>handle to the application's authenticating routine (if null, <code>true</code> is returned by default).</td>
+	</tr>
+</table>
 
-
-`Rhoconnect.NET` installs `/rhoconnect/authenticate` route into your application which will receive credentials from the client.  
+`Rhoconnect.NET` installs a `/rhoconnect/authenticate` route into your application which will receive credentials from the client.  
 By providing the `rhoconnect_authenticate` method and registering it with the `Rhoconnect.NET` in the `set_app_endpoint`
-method you will map your application specific authentication to the Rhoconnect `authenticate` requests:
+method, you map your application specific authentication to the Rhoconnect `authenticate` requests:
 
 	const bool rhoconnect_authenticate(String username, String password, Hashtable params)
 	{
@@ -85,7 +102,7 @@ method you will map your application specific authentication to the Rhoconnect `
 `Rhoconnect.NET` lib installs `/rhoconnect/<CRUD>` routes in your application which the Rhoconnect instance 
 invokes to perform CRUD operations on the data for the dataset you want to synchronize.
 Each of the routes is mapped to a corresponding `rhoconnect_<operation>` method in the **IRhoconnectCRUD** interface
-which must be implemented in the dataset's Controller class.
+which you must implement in the dataset's Controller class.
 
 		public class MyDataController : Controller, IRhoconnectCRUD
 		{
@@ -99,10 +116,10 @@ which must be implemented in the dataset's Controller class.
 			ActionResult rhoconnect_delete(Object objId, String partition);
 		} 
 
-### Querying the datasets
+## Query the datasets
 The route `/rhoconnect/query` is mapped to the `rhoconnect_query_objects` method of the **IRhoconnectCRUD**
-interface and must be implemented in the corresponding dataset's Controller class. It should
-return a collection of objects in the form of JsonResult:
+interface that you must implement in the corresponding dataset's Controller class. It must
+return a collection of source objects in the form of a JsonResult:
 
 		JsonResult rhoconnect_query_objects(String partition)
 		{
@@ -113,9 +130,9 @@ In the above example, the Products object set is converted to `Dictionary<String
 where the dictionary's key must correspond to an unique object's `id` field.
 After dictionary is created , it is converted to JsonResult and sent to the Rhoconnect server.
 
-### Creating new objects
+## Create new objects
 The route `/rhoconnect/create` is mapped to the `rhoconnect_create` method of the IRhoconnectCRUD
-interface and must be implemented in the corresponding dataset's Controller class. It should
+interface that you must implement in the corresponding dataset's Controller class. It should
 return a newly created object's id in case of success:
 
 		public ActionResult rhoconnect_create(String objJson, String partition)
@@ -126,9 +143,9 @@ return a newly created object's id in case of success:
             return RhoconnectNET.Helpers.serialize_result(new_product.id);
         }
 	
-### Updating existing objects
+## Update existing objects
 In the similar fashion, the route `/rhoconnect/update` is mapped to the `rhoconnect_update` method of the IRhoconnectCRUD
-interface and must be implemented in the corresponding dataset's Controller class. It should
+interface that you must implement in the corresponding dataset's Controller class. It should
 return an updated object's id in case of success:
 
 		public ActionResult rhoconnect_update(Dictionary<string, object> changes, String partition)
@@ -142,9 +159,9 @@ return an updated object's id in case of success:
             return RhoconnectNET.Helpers.serialize_result(obj_id); 
         }
 
-### Deleting objects from the dataset
+## Delete objects from the dataset
 The route `/rhoconnect/delete` is mapped to the `rhoconnect_delete` method of the IRhoconnectCRUD
-interface and must be implemented in the corresponding dataset's Controller class. It should
+interface that you must implement in the corresponding dataset's Controller class. It should
 return a deleted object's id in case of success:
 
         public ActionResult rhoconnect_delete(Object objId, String partition)
@@ -157,7 +174,7 @@ return a deleted object's id in case of success:
             return RhoconnectNET.Helpers.serialize_result(objId);
         }
 
-### Partitioning Datasets
+## Partitioning Datasets
 Each of the above methods have a partition key supplied with the CRUD request.	This partition key is used by `Rhoconnect` to uniquely identify the model dataset when it is stored in a rhoconnect instance.  It is typically an attribute on the model or related model.  `Rhoconnect` supports two types of partitions:
 
 * :app - No unique key will be used, a shared dataset is synchronized for all users.
@@ -168,8 +185,8 @@ In this case, your implementation might filter out data on a per user basis.
 	
 For more information about Rhoconnect partitions, please refer to the [Rhoconnect docs](http://docs.rhomobile.com/rhosync/source-adapters#data-partitioning).
 
-### Implementing MVC callbacks
-All of the above methods are necessary to establish the communication FROM the Rhoconnect instance to TO your ASP.NET MVC application. 
+## Implementing MVC callbacks
+All of the above methods are necessary to establish the communication from the Rhoconnect instance to your ASP.NET MVC application. 
 However, to complete the implementation, it is necessary to implement a reverse way to notify the Rhoconnect instance about the changes made in your MVC app.
 Typically, your MVC Controller class reacts to the actions by implementing the CRUD POST routes, for example:
 
@@ -186,7 +203,7 @@ Typically, your MVC Controller class reacts to the actions by implementing the C
             return View(new_product);
         }
 
-Here, you need to insert a call which will notify the Rhoconnect instance that new object has been created.
+Here, you need to insert a call which will notify the Rhoconnect instance that a new object has been created.
 For this reason, `RhoconnectNET` library provides three callback routines for CUD notifications.
 The above example will look like this after inserting the corresponding callback routine:
 
