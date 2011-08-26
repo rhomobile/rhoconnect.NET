@@ -71,14 +71,22 @@ and it has the following parameters:
 		<td><code>rhoconnect_url</code></td>
 		<td>rhoconnect server's url, for example <code>http://localhost:9292</code>.</td>
 	</tr>
+	<tr>
+		<td>String</td>
+		<td><code>app_endpoint</code></td>
+		<td>your MVC app url, for example <code>http://my_pc_host/MyApp</code>.</td>
+	</tr>
+	<tr>
+		<td>String</td>
+		<td><code>api_token</code></td>
+		<td>rhoconnect server's api_token, for example <code>secrettoken</code>.</td>
+	</tr>
+	<tr>
+		<td>Func\<String, String, Hashtable, bool\></td>
+		<td><code>Authenticating_Routine</code></td>
+		<td>handle to the application's authenticating routine (if null, <code>true</code> is returned by default).</td>
+	</tr>
 </table>
-
-
-- String *rhoconnect_url* : rhoconnect server's url, for example http://localhost:9292
-- String *app_endpoint* : your MVC app url, for example http://my_pc_host/MyApp
-- String *api_token* : rhoconnect server's api_token, for example 'secrettoken'.
-- Func\<String, String, Hashtable, bool\> *Authenticating_Routine* : handle to the application's authenticating routine (if null, `true` is returned by default)
-
 
 `Rhoconnect.NET` installs a `/rhoconnect/authenticate` route into your application which will receive credentials from the client.  
 By providing the `rhoconnect_authenticate` method and registering it with the `Rhoconnect.NET` in the `set_app_endpoint`
