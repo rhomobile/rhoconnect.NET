@@ -82,7 +82,7 @@ and it has the following parameters:
 		<td>rhoconnect server's api_token, for example <code>secrettoken</code>.</td>
 	</tr>
 	<tr>
-		<td>Func\<String, String, Hashtable, bool\></td>
+		<td>Func&lt;String, String, Hashtable, bool&gt;</td>
 		<td><code>Authenticating_Routine</code></td>
 		<td>handle to the application's authenticating routine (if null, <code>true</code> is returned by default).</td>
 	</tr>
