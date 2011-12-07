@@ -67,6 +67,11 @@ namespace RhoconnectNET
             return send_objects("push_deletes", source_name, partition, reqHash);
         }
 
+        public static bool notify_on_delete(String source_name, String partition, int id)
+        {
+            return notify_on_delete(source_name, partition, id.ToString());
+        }
+
         private static bool send_objects(String method, String source_name, String partition,
                                          Hashtable reqHash)
         {

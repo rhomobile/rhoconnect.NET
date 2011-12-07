@@ -41,6 +41,9 @@ namespace RhoconnectNET
             foreach (KeyValuePair<string, object> kvp in changes)
             {
                 PropertyInfo property = obj.GetType().GetProperty(kvp.Key);
+                // skip unknown properties
+                if (property == null)
+                    continue;
                 Object convValue = Convert.ChangeType(kvp.Value, property.PropertyType);
                 property.SetValue(obj, convValue, null);
             }
