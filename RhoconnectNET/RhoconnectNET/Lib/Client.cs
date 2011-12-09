@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.IO;
 using System.Collections;
+using System.Reflection;
 
 namespace RhoconnectNET
 {
@@ -43,6 +44,41 @@ namespace RhoconnectNET
             }
         }
 
+        public static bool notify_on_create(String partition,
+                                            Object created_obj)
+        {
+            String source_name = created_obj.GetType().Name;
+            String obj_id = get_id_property(created_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, created_obj);
+            return notify_on_create(source_name, partition, objects);
+        }
+
+        public static bool notify_on_create(String partition,
+                                            String id_property,
+                                            Object created_obj)
+        {
+            String source_name = created_obj.GetType().Name;
+            String obj_id = get_id_property(id_property, created_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, created_obj);
+            return notify_on_create(source_name, partition, objects);
+        }
+
+        public static bool notify_on_create(String source_name,
+                                            String partition,
+                                            String id_property,
+                                            Object created_obj)
+        {
+            String obj_id = get_id_property(id_property, created_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, created_obj);
+            return notify_on_create(source_name, partition, objects);
+        }
+        
         public static bool notify_on_create(String source_name, String partition,
                                             Hashtable objects)
         {
@@ -51,11 +87,54 @@ namespace RhoconnectNET
             return send_objects("push_objects", source_name, partition, reqHash);
         }
 
+        public static bool notify_on_update(String partition,
+                                            Object updated_obj)
+        {
+            String source_name = updated_obj.GetType().Name;
+            String obj_id = get_id_property(updated_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, updated_obj);
+            return notify_on_update(source_name, partition, objects);
+        }
+
+        public static bool notify_on_update(String partition,
+                                            String id_property,
+                                            Object updated_obj)
+        {
+            String source_name = updated_obj.GetType().Name;
+            String obj_id = get_id_property(id_property, updated_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, updated_obj);
+            return notify_on_update(source_name, partition, objects);
+        }
+
+        public static bool notify_on_update(String source_name,
+                                            String partition,
+                                            String id_property,
+                                            Object updated_obj)
+        {
+            String obj_id = get_id_property(id_property, updated_obj);
+
+            Hashtable objects = new Hashtable();
+            objects.Add(obj_id, updated_obj);
+            return notify_on_update(source_name, partition, objects);
+        }
+
         public static bool notify_on_update(String source_name, String partition, Hashtable objects)
         {
             Hashtable reqHash = new Hashtable();
             reqHash.Add("objects", objects);
             return send_objects("push_objects", source_name, partition, reqHash);
+        }
+
+        public static bool notify_on_delete(Object deleted_obj, String partition)
+        {
+            String source_name = deleted_obj.GetType().Name;
+            String obj_id = get_id_property(deleted_obj);
+
+            return notify_on_delete(source_name, partition, obj_id);
         }
 
         public static bool notify_on_delete(String source_name, String partition, Object id)
@@ -107,5 +186,31 @@ namespace RhoconnectNET
             return true;
         }
 
+        private static String get_id_property(Object obj)
+        {
+            String class_name = obj.GetType().Name;
+
+            string[] id_names = new string[] { "ID", "id", "Id" };
+
+            foreach (string id_name in id_names)
+            {
+                PropertyInfo property = obj.GetType().GetProperty(id_name);
+                if (property != null)
+                    return property.GetValue(obj, null).ToString();
+            }
+
+            // not found anything relevant
+            throw new SystemException("Class " + class_name + " doesn't have any ID fields, please specify them explicitly");
+        }
+
+        private static String get_id_property(String id_name, Object obj)
+        {
+            PropertyInfo property = obj.GetType().GetProperty(id_name);
+            if (property != null)
+                return property.GetValue(obj, null).ToString();
+
+            // not found anything relevant
+            throw new SystemException("Class " + obj.GetType().Name + " doesn't have " + id_name + " property!");
+        }
     }
 }
