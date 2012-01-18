@@ -41,9 +41,42 @@ namespace RhoconnectNET
             foreach (KeyValuePair<string, object> kvp in changes)
             {
                 PropertyInfo property = obj.GetType().GetProperty(kvp.Key);
-                Object convValue = Convert.ChangeType(kvp.Value, property.PropertyType);
+                Object convValue = ChangeType(kvp.Value, property.PropertyType);
                 property.SetValue(obj, convValue, null);
             }
         }
+        
+        public static object ChangeType(object value, Type conversionType)
+        {
+            // Note: This if block was taken from Convert.ChangeType as is, and is needed here since we're
+            // checking properties on conversionType below.
+            if (conversionType == null)
+            {
+                throw new ArgumentNullException("conversionType");
+            } // end if
+ 
+            // If it's not a nullable type, just pass through the parameters to Convert.ChangeType
+ 
+            if (conversionType.IsGenericType &&
+              conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                // It's a nullable type, so determine what the underlying type is
+                if (value == null)
+                {
+                    return null;
+                }
+ 
+                // It's a nullable type, and not null, so that means it can be converted to its underlying type,
+                // so overwrite the passed-in conversion type with this underlying type
+                NullableConverter nullableConverter = new NullableConverter(conversionType);
+                conversionType = nullableConverter.UnderlyingType;
+            } // end if
+ 
+            // Now that we've guaranteed conversionType is something Convert.ChangeType can handle (i.e. not a
+            // nullable type), pass the call on to Convert.ChangeType
+            return Convert.ChangeType(value, conversionType);
+        }
+
+        
     }
 }
