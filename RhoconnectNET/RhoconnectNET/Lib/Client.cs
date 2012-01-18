@@ -19,7 +19,7 @@ namespace RhoconnectNET
         public static bool set_app_endpoint(String endpoint,
                                             String app_endpoint,
                                             String api_token,
-                                            Func<String, String, Hashtable, bool> auth_handler)
+                                            RhoconnectNET.Helpers.rhoAuthHandler auth_handler)
         {
             try
             {

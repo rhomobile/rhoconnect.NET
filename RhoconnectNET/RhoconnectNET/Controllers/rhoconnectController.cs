@@ -53,9 +53,10 @@ namespace RhoconnectNET.Controllers
             try
             {
                 Hashtable reqHash = deserialize_request();
+                // in OK responses , returnValue is authenticated username
                 returnValue = (String)reqHash["login"];
                 Response.StatusCode = 200;
-                bool authOK = RhoconnectNET.Helpers.rhoconnect_authenticate((String)reqHash["login"], (String)reqHash["password"], reqHash);
+                bool authOK = RhoconnectNET.Helpers.rhoconnect_authenticate(ref returnValue, (String)reqHash["password"], reqHash);
                 if (!authOK)
                     throw new SystemException("Authentication has failed");
             }
