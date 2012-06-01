@@ -29,9 +29,7 @@ namespace RhoconnectNET
 
                 Hashtable reqHash = new Hashtable();
                 reqHash.Add("api_token", _api_token);
-                Hashtable attrHash = new Hashtable();
-                attrHash.Add("adapter_url", app_endpoint);
-                reqHash.Add("attributes", attrHash);
+                reqHash.Add("adapter_url", app_endpoint);
 
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 string requestBody = js.Serialize(reqHash);
