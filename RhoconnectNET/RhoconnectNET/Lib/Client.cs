@@ -36,7 +36,7 @@ namespace RhoconnectNET
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 string requestBody = js.Serialize(reqHash);
 
-                return process_request("save_adapter", requestBody);
+                return process_request("rc/v1/system/appserver", requestBody);
             }
             catch (SystemException)
             {
@@ -162,12 +162,12 @@ namespace RhoconnectNET
             JavaScriptSerializer js = new JavaScriptSerializer();
             string requestBody = js.Serialize(reqHash);
 
-            return process_request(method, requestBody);
+            return process_request("app/v1/" + source_name + "/" + method, requestBody);
         }
 
         private static bool process_request(String method, String body)
         {
-            Uri address = new Uri(_endpoint_url + "/api/source/" + method);
+            Uri address = new Uri(_endpoint_url + "/" + method);
             HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
             request.ContentType = "application/json";
             request.Method = "POST";
